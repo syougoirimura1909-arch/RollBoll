@@ -29,6 +29,7 @@ public class StegeMove : MonoBehaviour
     }
 
     // Update is called once per frame
+    public float threshold = 0.2f;
     void Update()
     {
         Debug.Log(moveInput.ReadValue<Vector2>());
@@ -37,19 +38,28 @@ public class StegeMove : MonoBehaviour
         //moveInput.ReadValue<Vector2>() ->(x,y,z=0)
 
         Vector3 rotation;
-        float threshold = 0.2f;
+       
         // Vector3 -> (x,y,z)
         //moveInput.ReadValue<Vector2>().x => X軸
         //moveInput.ReadValue<Vector2>().y => Z軸
 
-        rotation = new Vector3(moveInput.ReadValue<Vector2>().y*threshold, 0, moveInput.ReadValue<Vector2>().x*threshold);
+        rotation = new Vector3(
+        moveInput.ReadValue<Vector2>().y*threshold,
+        0,
+        moveInput.ReadValue<Vector2>().x*threshold);
 
-        this.transform.Rotate ( rotation );
-
+        //this.transform.Rotate ( rotation );
+        Quaternion tilt = Quaternion.Euler(rotation.x, 0f, rotation.z);
+        this.gameObject.GetComponent<Rigidbody>().MoveRotation (
+            this.gameObject.GetComponent<Rigidbody>().transform.rotation  * tilt
+            );
         // this.transfrom.Rotate += (x,y);
         // X,Y += (x,y);
- 
-        //1.回転軸がおかしい
+
 
     }
 }
+//ゴール判定の作成
+//1.IsTriggerの判定をコード上から取得
+//2.すり抜けたらCanvasにゴールしたよ！とメッセージ表示
+//(TexiMeshProで表示）
